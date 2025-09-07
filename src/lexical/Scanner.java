@@ -39,6 +39,9 @@ public class Scanner {
 					if (isLetter(currentChar)) {
 						content += currentChar;
 						state = 1;
+					} else if (isSlash(currentChar)) {
+						content += currentChar;
+						state = 7;
 					} else if (isMathOperator(currentChar)) {
 						content += currentChar;
 						return new Token(TokenType.MATH_OPERATOR, content);
@@ -60,6 +63,10 @@ public class Scanner {
 					} else if (isDigit(currentChar)) {
 						content += currentChar;
 						state = 6;
+					} else if (isHash(currentChar)) {
+						while (!isEoF() && currentChar != '\n') {
+							currentChar = nextChar();
+						}
 					}
 					break;
 				case 1:
@@ -119,6 +126,32 @@ public class Scanner {
 						return new Token(TokenType.NUMBER, content);
 					}
 					break;
+				case 7:
+					if (isAsterisk(currentChar)) {
+						content = "";
+						state = 8;
+					} else {
+						back();
+						return new Token(TokenType.MATH_OPERATOR, content);
+					}
+					break;
+				case 8:
+					while (!isEoF()) {
+						currentChar = nextChar();
+
+						if (isAsterisk(currentChar)) {
+							if (!isEoF()) {
+								char next = nextChar();
+
+								if (isSlash(next)) {
+									state = 0;
+									break;
+								}
+							}
+						}
+					}
+					state = 0;
+					break;
 			}
 		}
 	}
@@ -165,5 +198,17 @@ public class Scanner {
 
 	private boolean isRParen(char c) {
 		return c == ')';
+	}
+
+	private boolean isSlash(char c) {
+		return c == '/';
+	}
+
+	private boolean isHash(char c) {
+		return c == '#';
+	}
+
+	private boolean isAsterisk(char c) {
+		return c == '*';
 	}
 }

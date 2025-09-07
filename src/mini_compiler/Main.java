@@ -8,6 +8,11 @@ Renan Chacon      / 31761607
 
 package mini_compiler;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import lexical.Scanner;
 import lexical.Token;
 
