@@ -1,3 +1,4 @@
-== =+ x y soma 
+() === + x y soma 
+> >= < <= ! !=
 idade
 soma2

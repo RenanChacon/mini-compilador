@@ -40,10 +40,19 @@ public class Scanner {
 						state = 1;
 					} else if (isMathOperator(currentChar)) {
 						content += currentChar;
-						state = 3;
+						return new Token(TokenType.MATH_OPERATOR, content);
 					} else if (isAssignOperator(currentChar)) {
 						content += currentChar;
-						state = 4;
+						state = 2;
+					} else if (isRelOperator(currentChar)) {
+						content += currentChar;
+						state = 3;
+					} else if (isLParen(currentChar)) {
+						content += currentChar;
+						return new Token(TokenType.L_PAREN, content);
+					} else if (isRParen(currentChar)) {
+						content += currentChar;
+						return new Token(TokenType.R_PAREN, content);
 					}
 					break;
 				case 1:
@@ -51,29 +60,30 @@ public class Scanner {
 						content += currentChar;
 						state = 1;
 					} else {
-						state = 2;
+						back();
+						return new Token(TokenType.IDENTIFIER, content);
 					}
 					break;
 				case 2:
-					back();
-					return new Token(TokenType.IDENTIFIER, content);
-				case 3:
-					back();
-					return new Token(TokenType.MATH_OPERATOR, content);
-				case 4:
 					if (isAssignOperator(currentChar)) {
 						content += currentChar;
-						state = 5;
+						return new Token(TokenType.REL_OPERATOR, content);
 					} else {
-						state = 6;
+						back();
+						return new Token(TokenType.ASSIGNMENT, content);
+					}
+				case 3:
+					if (isAssignOperator(currentChar)) {
+						content += currentChar;
+						return new Token(TokenType.REL_OPERATOR, content);
+					} else if (!content.equals("!")) {
+						back();
+						return new Token(TokenType.REL_OPERATOR, content);
+					} else {
+						content = "";
+						state = 0;
 					}
 					break;
-				case 5:
-					back();
-					return new Token(TokenType.REL_OPERATOR, content);
-				case 6:
-					back();
-					return new Token(TokenType.ASSIGNMENT, content);
 			}
 		}
 	}
@@ -116,5 +126,13 @@ public class Scanner {
 
 	private boolean isAssignOperator(char c) {
 		return c == '=';
+	}
+
+	private boolean isLParen(char c) {
+		return c == '(';
+	}
+
+	private boolean isRParen(char c) {
+		return c == ')';
 	}
 }
