@@ -53,12 +53,17 @@ public class Scanner {
 					} else if (isRParen(currentChar)) {
 						content += currentChar;
 						return new Token(TokenType.R_PAREN, content);
+					} else if (isPoint(currentChar)) {
+						content += currentChar;
+						state = 4;
+					} else if (isDigit(currentChar)) {
+						content += currentChar;
+						state = 6;
 					}
 					break;
 				case 1:
 					if (isLetter(currentChar) || isDigit(currentChar)) {
 						content += currentChar;
-						state = 1;
 					} else {
 						back();
 						return new Token(TokenType.IDENTIFIER, content);
@@ -82,6 +87,34 @@ public class Scanner {
 					} else {
 						content = "";
 						state = 0;
+					}
+					break;
+				case 4:
+					if (isDigit(currentChar)) {
+						content += currentChar;
+						state = 5;
+					} else {
+						content = "";
+						state = 0;
+					}
+					break;
+				case 5:
+					if (isDigit(currentChar)) {
+						content += currentChar;
+					} else {
+						back();
+						return new Token(TokenType.NUMBER, content);
+					}
+					break;
+				case 6:
+					if (isDigit(currentChar)) {
+						content += currentChar;
+					} else if (isPoint(currentChar)) {
+						content += currentChar;
+						state = 4;
+					} else {
+						back();
+						return new Token(TokenType.NUMBER, content);
 					}
 					break;
 			}
@@ -118,10 +151,6 @@ public class Scanner {
 
 	private boolean isPoint(char c) {
 		return c == '.';
-	}
-
-	private boolean isSpace(char c) {
-		return c == ' ';
 	}
 
 	private boolean isAssignOperator(char c) {
