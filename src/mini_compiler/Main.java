@@ -1,3 +1,11 @@
+/*
+Alunos:
+Etienne Pautet    / 31334369
+Fabiano Quirino   / 31719511
+João Pedro Araújo / 30914132
+Renan Chacon      / 31761607
+ */
+
 package mini_compiler;
 
 import lexical.Scanner;

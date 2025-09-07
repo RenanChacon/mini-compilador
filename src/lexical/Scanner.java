@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import util.ReservedWords;
 import util.TokenType;
 
 public class Scanner {
@@ -66,7 +67,8 @@ public class Scanner {
 						content += currentChar;
 					} else {
 						back();
-						return new Token(TokenType.IDENTIFIER, content);
+						TokenType type = ReservedWords.TABLE.getOrDefault(content, TokenType.IDENTIFIER);
+						return new Token(type, content);
 					}
 					break;
 				case 2:
