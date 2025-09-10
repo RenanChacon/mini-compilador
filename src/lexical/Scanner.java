@@ -11,13 +11,15 @@ import util.TokenType;
 public class Scanner {
 	private int state;
 	private char[] sourceCode;
-	private int pos;
+	private int pos, lin, col;
 
 	public Scanner(String filename) {
 		try {
 			String content = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
 			sourceCode = content.toCharArray();
 			pos = 0;
+			col = 0;
+			lin = 1;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,6 +69,10 @@ public class Scanner {
 						while (!isEoF() && currentChar != '\n') {
 							currentChar = nextChar();
 						}
+					} else if (!Character.isWhitespace(currentChar)) {
+						throw new RuntimeException(
+								"Erro léxico na linha " + lin + ", coluna " + col + ": símbolo '" + currentChar + "' não reconhecido."
+							);				
 					}
 					break;
 				case 1:
@@ -173,6 +179,12 @@ public class Scanner {
 	}
 
 	private char nextChar() {
+		if (sourceCode[pos] == '\n') {
+			lin++;
+			col = 0;
+		} else {
+			col++;
+		}
 		return sourceCode[pos++];
 	}
 
