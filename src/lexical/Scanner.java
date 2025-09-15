@@ -70,9 +70,7 @@ public class Scanner {
 							currentChar = nextChar();
 						}
 					} else if (!Character.isWhitespace(currentChar)) {
-						throw new RuntimeException(
-								"Erro léxico na linha " + lin + ", coluna " + col + ": símbolo '" + currentChar + "' não reconhecido."
-							);				
+						erro_caracter(currentChar);				
 					}
 					break;
 				case 1:
@@ -100,25 +98,35 @@ public class Scanner {
 						back();
 						return new Token(TokenType.REL_OPERATOR, content);
 					} else {
-						content = "";
-						state = 0;
+						back();
+						erro_caracter(sourceCode[pos-1]);
 					}
-					break;
+					
 				case 4:
 					if (isDigit(currentChar)) {
 						content += currentChar;
 						state = 5;
+					} else if (content.length() <= 1){
+						back();
+						erro_caracter(sourceCode[pos-1]);
 					} else {
-						content = "";
-						state = 0;
+						back();
+						erro_cadeia(content);
 					}
 					break;
 				case 5:
 					if (isDigit(currentChar)) {
 						content += currentChar;
-					} else {
+					} else if(!isLetter(currentChar)){
 						back();
 						return new Token(TokenType.NUMBER, content);
+					} else {
+						while (isLetter(currentChar) || isDigit(currentChar)) {
+							content += currentChar;
+							currentChar = nextChar();
+						}
+						back();
+						erro_cadeia(content);
 					}
 					break;
 				case 6:
@@ -127,9 +135,16 @@ public class Scanner {
 					} else if (isPoint(currentChar)) {
 						content += currentChar;
 						state = 4;
-					} else {
+					} else if(!isLetter(currentChar)){
 						back();
 						return new Token(TokenType.NUMBER, content);
+					} else {
+						while (isLetter(currentChar) || isDigit(currentChar)) {
+							content += currentChar;
+							currentChar = nextChar();
+						}
+						back();
+						erro_cadeia(content);
 					}
 					break;
 				case 7:
@@ -188,7 +203,20 @@ public class Scanner {
 		return sourceCode[pos++];
 	}
 
+	private void erro_caracter(char c){
+		throw new RuntimeException(
+			"Erro léxico na linha " + lin + ", coluna " + col + ". Símbolo '" + c + "' não reconhecido."
+			);
+	}
+	
+	private void erro_cadeia(String s){
+		throw new RuntimeException(
+			"Erro léxico na linha " + lin + ", coluna " + (col-s.length()+1) + " à " + col + ". Cadeia '" + s + "' não reconhecida."
+			);
+	}
+	
 	private void back() {
+		col--;
 		pos--;
 	}
 
