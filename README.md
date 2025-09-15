@@ -20,8 +20,10 @@ O projeto é parte de um compilador em desenvolvimento incremental e **possui pe
 │ ├── mini_compiler/
 │ │ └── Main.java # Classe principal para execução do compilador
 │ │
-│ └── util/
-│ └── TokenType.java # Enumeração com os tipos de tokens reconhecidos
+│ ├── util/
+│ │ ├── TokenType.java # Enumeração com os tipos de tokens reconhecidos
+│ │ └── ReservedWords.java # Tabela com as palavras reservadas
+│ └── programa.mc # arquivo para teste
 │
 └── README.md # Documentação do projeto
 ```
