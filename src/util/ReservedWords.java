@@ -7,10 +7,22 @@ public class ReservedWords {
     public static final Map<String, TokenType> TABLE = new HashMap<>();
 
     static {
-        TABLE.put("int", TokenType.INT);
-        TABLE.put("float", TokenType.FLOAT);
-        TABLE.put("print", TokenType.PRINT);
-        TABLE.put("if", TokenType.IF);
-        TABLE.put("else", TokenType.ELSE);
+        TABLE.put("INT", TokenType.INT);
+        TABLE.put("FLOAT", TokenType.FLOAT);
+        TABLE.put("INICIO", TokenType.INICIO);
+        TABLE.put("DECLS", TokenType.DECLS);
+        TABLE.put("FIMDECLS", TokenType.FIMDECLS);
+        TABLE.put("CODIGO", TokenType.CODIGO);
+        TABLE.put("FIMPROG", TokenType.FIMPROG);
+        TABLE.put("LEIA", TokenType.LEIA);
+        TABLE.put("ESCREVA", TokenType.ESCREVA);
+        TABLE.put("SE", TokenType.SE);
+        TABLE.put("ENTAO", TokenType.ENTAO);
+        TABLE.put("SENAO", TokenType.SENAO);
+        TABLE.put("REPITA", TokenType.REPITA);
+        TABLE.put("BLOCO", TokenType.BLOCO);
+        TABLE.put("FIMBLOCO", TokenType.FIMBLOCO);
+        TABLE.put("E", TokenType.E);
+        TABLE.put("OU", TokenType.OU);
     }
 }

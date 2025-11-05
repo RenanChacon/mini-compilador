@@ -19,7 +19,7 @@ public class Scanner {
 			sourceCode = content.toCharArray();
 			pos = 0;
 			col = 0;
-			lin = 1;
+			lin = 1;     
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -31,8 +31,34 @@ public class Scanner {
 		state = 0;
 
 		while (true) {
+			
 			if (isEoF()) {
-				return null;
+				
+				switch(state) {
+					case 0:
+						return null;
+					case 1:
+						TokenType type = ReservedWords.TABLE.getOrDefault(content, TokenType.IDENTIFIER);
+						return new Token(type, content);
+					case 5: 
+					case 6: 
+						return new Token(TokenType.NUMBER, content);
+					case 2:
+						return new Token(TokenType.ASSIGNMENT, content);
+					case 3:
+						if (content.equals("!")) {
+							erro_caracter('!');
+						}
+						return new Token(TokenType.REL_OPERATOR, content);
+					case 4:
+						erro_cadeia(content);
+					case 7:
+						return new Token(TokenType.MATH_OPERATOR, content);
+					case 8: 
+						throw new RuntimeException("Erro léxico: Comentário em bloco não fechado (EOF)");
+					default:
+						return null; 
+				}
 			}
 			currentChar = nextChar();
 
@@ -47,16 +73,19 @@ public class Scanner {
 					} else if (isMathOperator(currentChar)) {
 						content += currentChar;
 						return new Token(TokenType.MATH_OPERATOR, content);
+					} else if (currentChar == ':') {
+						content += currentChar;
+						return new Token(TokenType.COLON, content);
 					} else if (isAssignOperator(currentChar)) {
 						content += currentChar;
 						state = 2;
 					} else if (isRelOperator(currentChar)) {
 						content += currentChar;
 						state = 3;
-					} else if (isLParen(currentChar)) {
+					} else if (currentChar == '(') {
 						content += currentChar;
 						return new Token(TokenType.L_PAREN, content);
-					} else if (isRParen(currentChar)) {
+					} else if (currentChar == ')') {
 						content += currentChar;
 						return new Token(TokenType.R_PAREN, content);
 					} else if (isPoint(currentChar)) {
@@ -230,14 +259,6 @@ public class Scanner {
 
 	private boolean isAssignOperator(char c) {
 		return c == '=';
-	}
-
-	private boolean isLParen(char c) {
-		return c == '(';
-	}
-
-	private boolean isRParen(char c) {
-		return c == ')';
 	}
 
 	private boolean isSlash(char c) {

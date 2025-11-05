@@ -8,18 +8,22 @@ Renan Chacon      / 31761607
 
 package mini_compiler;
 
+import exceptions.SyntacticException;
 import lexical.Scanner;
-import lexical.Token;
+import syntactic.Parser;
 
 public class Main {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner("programa.mc");
-		Token tk;
-		do {
-			tk = sc.nextToken();
-			System.out.println(tk);
-		} while (tk != null);
+		try {
+			Parser parser = new Parser(sc);
+			parser.programa();
+			System.out.println("Compilation successful");
+		} catch (SyntacticException e) {
+			System.out.println("Syntactic error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
 }
